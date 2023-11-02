@@ -8,7 +8,9 @@ public class PlayerMovement : MonoBehaviour
 
     public float moveSpeed = 0.5f;
     public Rigidbody2D rb;
-    public Animator animator;
+    public Animator animator; 
+    private bool isSprinting = false;
+
 
     Vector2 movement;
 
@@ -19,14 +21,59 @@ public class PlayerMovement : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
+
         animator.SetFloat("Horizontal", movement.x);
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
+        Sprinting();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
+
     {
-        //Movement
-        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+
+        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+
     }
-}
+
+
+
+    void Sprinting()
+
+    {
+
+        if (Input.GetKey(KeyCode.RightShift))
+
+        {
+
+            isSprinting = true;
+
+        }
+
+        else
+
+        {
+
+            isSprinting = false;
+
+        }
+
+
+
+        if (isSprinting)
+
+        {
+
+            moveSpeed = 1f;
+
+        }
+
+        else
+
+        {
+
+            moveSpeed = 0.5f;
+
+        }
+    }
+    }
