@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1125653671735640994}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.789, z: 0}
+  m_LocalPosition: {x: -1.495, y: 0.811, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624f43ea41355524daee1cd3914eceef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newCamPos: {x: 2.5, y: 0, z: 0}
+  newCamPos: {x: 2.8, y: 0, z: 0}
   newPlayerPos: {x: 0.5, y: 0, z: 0}
 --- !u!1 &8133944060551899169
 GameObject:
@@ -119,7 +119,7 @@ Transform:
   m_GameObject: {fileID: 8133944060551899169}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.012, y: 0.789, z: 0}
+  m_LocalPosition: {x: -1.468, y: 0.804, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624f43ea41355524daee1cd3914eceef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newCamPos: {x: -2.5, y: 0, z: 0}
+  newCamPos: {x: -2.8, y: 0, z: 0}
   newPlayerPos: {x: -0.5, y: 0, z: 0}
 --- !u!1 &8825539362908594684
 GameObject:

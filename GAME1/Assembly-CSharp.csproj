@@ -58,7 +58,21 @@
     <Analyzer Include="D:\Unity\2022.3.5f1\Unity 2022.3.5f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Flashlight.cs" />
+    <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\TopDownCharacterController.cs" />
+    <Compile Include="Assets\CamTrigger.cs" />
+    <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\PropsAltar.cs" />
     <Compile Include="Assets\PlayerMovement.cs" />
+    <Compile Include="Assets\CamController.cs" />
+    <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\SpriteColorAnimation.cs" />
+    <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\LayerTrigger.cs" />
+    <Compile Include="Assets\Cainos\Pixel Art Top Down - Basic\Script\CameraFollow.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\FlashlightDarkness.shader" />
+    <None Include="Assets\Cainos\Pixel Art Top Down - Basic\Changelog.txt" />
+    <None Include="Assets\Cainos\Pixel Art Top Down - Basic\Shader\SH Sprite Shadow.shader" />
+    <None Include="Assets\Cainos\Pixel Art Top Down - Basic\Shader\SH Sprite Shadow Mask.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

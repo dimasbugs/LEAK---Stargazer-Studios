@@ -26,6 +26,15 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
         Sprinting();
+
+        // Get a reference to the flashlight script
+        Flashlight flashlight = GetComponentInChildren<Flashlight>();
+
+        if (flashlight != null)
+        {
+            // Set the player transform in the flashlight script
+            flashlight.playerTransform = transform;
+        }
     }
 
     private void FixedUpdate()
