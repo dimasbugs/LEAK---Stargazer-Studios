@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float moveSpeed = 0.5f;
     public Rigidbody2D rb;
-    public Animator animator; 
+    public Animator animator;
     private bool isSprinting = false;
 
 
@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
             // Set the player transform in the flashlight script
             flashlight.playerTransform = transform;
         }
+
     }
 
     private void FixedUpdate()
