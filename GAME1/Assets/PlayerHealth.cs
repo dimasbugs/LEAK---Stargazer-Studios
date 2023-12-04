@@ -46,4 +46,5 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Min(currentHealth, maxHealth);
 
     }
+
 }
