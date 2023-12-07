@@ -7,10 +7,13 @@ public class EnemyMovement : MonoBehaviour
     public float speed;
     public float checkRadius;
     public float attackRadius;
+    public float losRadius;
 
     public bool shouldRotate;
+    public bool isHiding;
 
     public LayerMask whatIsPlayer;
+    public LayerMask whatIsObstacle;
 
     private Transform target;
     private Rigidbody2D rb;
@@ -19,8 +22,8 @@ public class EnemyMovement : MonoBehaviour
     public Vector2 movement;
     public Vector3 dir;
 
-    public float Health 
-    { 
+    public float Health
+    {
         set
         {
             skelHealth = value;
@@ -39,38 +42,71 @@ public class EnemyMovement : MonoBehaviour
 
     private bool isInChaseRange;
     private bool isInAttackRange;
+    private bool hasLineOfSight;
 
+    private Vector2 initialPosition;
+    private bool isReturningToInitialPosition;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        target = GameObject.FindWithTag("Player").transform;
+        target = GameObject.FindWithTag("Player").transform; 
+        initialPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        anim.SetBool("isRunning", isInChaseRange);
-        anim.SetBool("isIdle", isInAttackRange);
-        isInChaseRange = Physics2D.OverlapCircle(transform.position, checkRadius, whatIsPlayer);
-        isInAttackRange = Physics2D.OverlapCircle(transform.position, attackRadius, whatIsPlayer);
-
-        dir = target.position - transform.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        dir.Normalize();
-        movement = dir;
-        if (shouldRotate)
+        if (!isHiding)
         {
-            anim.SetFloat("Horizontal", dir.x);
-            anim.SetFloat("Vertical", dir.y);
+            anim.SetBool("isRunning", isInChaseRange);
+            anim.SetBool("isIdle", isInAttackRange);
+            isInChaseRange = Physics2D.OverlapCircle(transform.position, checkRadius, whatIsPlayer);
+            isInAttackRange = Physics2D.OverlapCircle(transform.position, attackRadius, whatIsPlayer);
+
+            hasLineOfSight = Physics2D.Raycast(transform.position, dir.normalized, losRadius, whatIsObstacle);
+
+            dir = target.position - transform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            dir.Normalize();
+            movement = dir;
+            if (shouldRotate)
+            {
+                anim.SetFloat("Horizontal", dir.x);
+                anim.SetFloat("Vertical", dir.y);
+            }
+
+            if (!isInChaseRange && !isInAttackRange && !hasLineOfSight && !isReturningToInitialPosition)
+            {
+                // Player is not in chase range, not in attack range, and not hiding.
+                // Start returning to the initial position.
+                isReturningToInitialPosition = true;
+            }
+
+            if (isReturningToInitialPosition)
+            {
+                // Calculate direction to the initial position
+                Vector2 returnDir = (initialPosition - (Vector2)transform.position).normalized;
+
+                // Move towards the initial position
+                MoveCharacter(returnDir);
+
+                // Check if close to the initial position
+                float distanceToInitial = Vector2.Distance(transform.position, initialPosition);
+                if (distanceToInitial < 0.1f)
+                {
+                    // Reached the initial position, stop returning
+                    isReturningToInitialPosition = false;
+                }
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        if (isInChaseRange && !isInAttackRange)
+        if (isInChaseRange && !isInAttackRange && !hasLineOfSight && !isHiding)
         {
             MoveCharacter(movement);
         }
@@ -92,7 +128,15 @@ public class EnemyMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Hit");
-        OnHit(skelHealth);
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            OnHit(1); // Enemy takes 1 damage
+        }
+    }
+
+    // Call this method to reset the enemy to its initial position
+    void ResetToInitialPosition()
+    {
+        transform.position = initialPosition;
     }
 }

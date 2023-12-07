@@ -5,7 +5,6 @@ public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 4;
     public int currentHealth;
-
     public healtBar HealtBar;
 
     void Start()
@@ -16,17 +15,12 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        // Simulate taking damage with space bar (you can replace this with your actual damage logic)
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TakeDamage(1); // Adjust the damage amount as needed
-        }
+        
     }
 
     void TakeDamage(int damage)
     {
         currentHealth -= damage;
-
         HealtBar.SetHealth(currentHealth);
 
         // Check if the player is dead
@@ -44,7 +38,15 @@ public class PlayerHealth : MonoBehaviour
 
         // Ensure that current health does not exceed max health
         currentHealth = Mathf.Min(currentHealth, maxHealth);
-
     }
 
+    // OnCollisionEnter2D is called when this collider/rigidbody has begun touching another rigidbody/collider
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            // Reduce player health by 1 when colliding with an object with "Enemy" tag
+            TakeDamage(1);
+        }
+    }
 }

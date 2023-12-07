@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
     private bool isWalking = true;
     private bool isSprinting = false;
+    private bool isHiding = false;
+    private Vector3 hidingStartPosition;
 
     [SerializeField]
     private Button PauseButton;
@@ -76,6 +78,19 @@ public class PlayerMovement : MonoBehaviour
                 isWalking = false;
                 animator.SetBool("isMoving", isWalking);
                 StopMoving();
+            }
+        }
+
+        // Check for interaction with hiding spots
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (isHiding)
+            {
+                EndHiding();
+            }
+            else
+            {
+                TryToHide();
             }
         }
 
@@ -158,4 +173,44 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+
+    void TryToHide()
+    {
+        // Raycast to check if there is a hiding spot in front of the player
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, moveDir, 1.5f, LayerMask.GetMask("HidingSpot"));
+
+        if (hit.collider != null)
+        {
+            StartHiding();
+        }
+    }
+
+    void StartHiding()
+    {
+        isHiding = true;
+        hidingStartPosition = transform.position;
+
+        // Deactivate components and make the player invisible
+        GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<Collider2D>().enabled = false;
+        // Add more components to deactivate as needed
+
+        // Optionally perform additional hiding actions, e.g., play hiding animation
+    }
+
+    void EndHiding()
+    {
+        // Reactivate components and make the player visible
+        GetComponent<SpriteRenderer>().enabled = true;
+        GetComponent<Collider2D>().enabled = true;
+        // Add more components to reactivate as needed
+
+        // Reappear the player at the last hiding position
+        transform.position = hidingStartPosition;
+
+        // Optionally perform additional actions after ending hiding, e.g., play end hiding animation
+
+        isHiding = false;
+    }
+
 }

@@ -4,7 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Skeleton
+  - Enemy
+  - HidingSpot
   layers:
   - Default
   - TransparentFX
@@ -12,8 +13,8 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
-  - 
+  - Obstacle
+  - HidingSpot
   - 
   - 
   - 
