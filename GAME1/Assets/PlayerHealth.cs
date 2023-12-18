@@ -9,6 +9,8 @@ public class PlayerHealth : MonoBehaviour
     public healtBar HealtBar;
     public bool isDie;
 
+    public GameManager gameManager;
+
     void Start()
     {
         LoadPlayerHealth(); // Try loading the player health at the start
@@ -16,7 +18,12 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        // Your update logic here
+        // Check for the player's death state
+        if (isDie == true)
+        {
+            // Call the PlayerDied function in the GameManager
+            gameManager.PlayerDied();
+        }// Your update logic here
     }
 
     void TakeDamage(int damage)
@@ -29,15 +36,6 @@ public class PlayerHealth : MonoBehaviour
             currentHealth = 0;
             isDie = true;
             Debug.Log("Player is dead!");
-
-            // Respawn the player at the last save spot
-            SaveSpot.RespawnPlayer(gameObject);
-
-            // Save the current health before reloading the scene
-            SavePlayerHealth();
-
-            // Reload the scene when the player dies
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 

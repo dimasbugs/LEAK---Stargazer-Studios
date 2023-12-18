@@ -53,12 +53,29 @@ public class PlayerMovement : MonoBehaviour
         // Assuming the Light2D component is in a child object of this GameObject
         playerLight = GetComponentInChildren<Light2D>();
         currentStamina = staminaMax;
+
+        // Set isLighten to false
+        isLighten = false;
+
+        // Disable the Light2D component
+        if (playerLight != null)
+        {
+            playerLight.enabled = false;
+        }
+
+        // Set the "isLighten" parameter in the animator to false
+        if (animator != null)
+        {
+            animator.SetBool("isLighten", isLighten);
+        }
+
         // Add a listener for the resume button click event
         if (resumeButton != null)
         {
             resumeButton.onClick.AddListener(ResumeGame);
         }
     }
+
 
 
     void ResumeGame()
@@ -105,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isLighten)
             {
@@ -157,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
         if (isSprinting)
         {
             currentStamina -= Time.deltaTime * (staminaMax / 5f); // Adjust the divisor to control sprint duration
-            if (currentStamina < 0)
+            if (currentStamina < 1)
             {
                 currentStamina = 0;
                 isSprinting = false;
@@ -211,7 +228,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Sprinting()
     {
-        if (Input.GetKey(KeyCode.RightShift) && !isHiding && currentStamina > 0)
+        if (Input.GetKey(KeyCode.RightShift) && !isHiding && currentStamina > 1)
         {
             isSprinting = true;
             moveDir = new Vector3(movement.x, movement.y).normalized;

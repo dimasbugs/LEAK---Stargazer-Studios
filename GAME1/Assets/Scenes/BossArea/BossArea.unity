@@ -392,6 +392,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: enemy1
       objectReference: {fileID: 0}
+    - target: {fileID: 8633165748559297230, guid: 344e61600c30dd34b8f8bdbebfb22f43,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -586,7 +591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a02e260b346d83b43bb41b4637f28c65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneBuildIndex: 2
+  sceneBuildIndex: 1
 --- !u!61 &872398905
 BoxCollider2D:
   m_ObjectHideFlags: 0
