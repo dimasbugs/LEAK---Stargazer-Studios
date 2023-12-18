@@ -2,25 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using UnityEngine.Experimental.Rendering.Universal; // Import this namespace for Light2D
+
 
 public class PlayerMovement : MonoBehaviour
 {
     // Start is called before the first frame update
 
     public float moveSpeed = 0.5f;
-    public Rigidbody2D rb;
-    public Animator animator;
+    public float walkSpeed = 0.5f;
+    public float sprintSpeed = 1f;
+    public float staminaMax = 10f;
+    public float staminaRegenRate = 0.5f;
+
+    private float currentStamina;
     private bool isWalking = true;
     private bool isSprinting = false;
     private bool isHiding = false;
-    private Vector3 hidingStartPosition;
+    private Vector3 hidingStartPosition; 
+    
+    private bool isLighten = false;
+
+    // Reference to the Light2D component
+    private Light2D playerLight;
+
+    public Rigidbody2D rb;
+    public Animator animator;
 
     [SerializeField]
     private Button PauseButton;
 
     [SerializeField]
     private Button resumeButton;
+
+    [SerializeField]
+    private dialogueBox DialogueBox;
+    public dialogueBox dialogueBox => DialogueBox;
+    public IInteractible Interactible { get; set; }
 
     private bool isPaused = false;
 
@@ -30,6 +50,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // Assuming the Light2D component is in a child object of this GameObject
+        playerLight = GetComponentInChildren<Light2D>();
+        currentStamina = staminaMax;
         // Add a listener for the resume button click event
         if (resumeButton != null)
         {
@@ -57,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (DialogueBox.isOpen) return;
         //Input
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
@@ -81,9 +105,42 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (isLighten)
+            {
+                // If isLighten is true, set it back to false
+                isLighten = false;
+
+                // Disable the Light2D component
+                if (playerLight != null)
+                {
+                    playerLight.enabled = false;
+                }
+
+                // Trigger your animation or reset any other related variables
+                animator.SetBool("isLighten", isLighten);
+            }
+            else
+            {
+                // If isLighten is false, set it to true
+                isLighten = true;
+
+                // Enable the Light2D component
+                if (playerLight != null)
+                {
+                    playerLight.enabled = true;
+                }
+
+                // Trigger your animation or perform other actions related to right mouse button click
+                animator.SetBool("isLighten", isLighten);
+            }
+        }
+
         // Check for interaction with hiding spots
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Interactible?.Interact(this);
             if (isHiding)
             {
                 EndHiding();
@@ -94,16 +151,22 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        animator.SetFloat("Speed", movement.sqrMagnitude);
+        animator.SetFloat("Speed", movement.sqrMagnitude); 
         Sprinting();
 
-        // Get a reference to the flashlight script
-        Flashlight flashlight = GetComponentInChildren<Flashlight>();
-
-        if (flashlight != null)
+        if (isSprinting)
         {
-            // Set the player transform in the flashlight script
-            flashlight.playerTransform = transform;
+            currentStamina -= Time.deltaTime * (staminaMax / 5f); // Adjust the divisor to control sprint duration
+            if (currentStamina < 0)
+            {
+                currentStamina = 0;
+                isSprinting = false;
+            }
+        }
+        else
+        {
+            currentStamina += Time.deltaTime * staminaRegenRate;
+            currentStamina = Mathf.Clamp(currentStamina, 0, staminaMax);
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -147,37 +210,25 @@ public class PlayerMovement : MonoBehaviour
 
 
     void Sprinting()
-
     {
-
-        if (Input.GetKey(KeyCode.RightShift))
+        if (Input.GetKey(KeyCode.RightShift) && !isHiding && currentStamina > 0)
         {
             isSprinting = true;
+            moveDir = new Vector3(movement.x, movement.y).normalized;
+            moveSpeed = sprintSpeed;
         }
-
         else
         {
             isSprinting = false;
+            moveDir = Vector3.zero;
+            moveSpeed = walkSpeed;
         }
-
-
-
-        if (isSprinting)
-        {
-            moveSpeed = 1f;
-        }
-
-        else
-        {
-            moveSpeed = 0.5f;
-        }
-
     }
 
     void TryToHide()
     {
         // Raycast to check if there is a hiding spot in front of the player
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, moveDir, 1.5f, LayerMask.GetMask("HidingSpot"));
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, moveDir, 0.5f, LayerMask.GetMask("HidingSpot"));
 
         if (hit.collider != null)
         {
